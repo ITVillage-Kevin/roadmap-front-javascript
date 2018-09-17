@@ -15,47 +15,8 @@
             border: 1px solid #8F8F8F;
         }
     </style>
-    <script>
-        function registerTodo(){
-            var todoName = document.getElementById("todoName").value;
-            var todoDate = document.getElementById("todoDate").value;
-
-            if(!todoName){
-                alert("할일을 입력해주세요.");
-                return false;
-            }
-
-            if(!todoDate){
-                alert("날짜를 입력해주세요.");
-                return false;
-            }
-
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', 'http://localhost:8080/todoAjax', true);
-            xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-
-            xhr.onload = function(){
-                if(xhr.status == 200 || xhr.status == 201){
-
-                    // 화면에 반영
-                    var todoList = JSON.parse(xhr.responseText);
-                    var html = "";
-                    for (var i in todoList) {
-                        var todo = todoList[i];
-                        html += '<tr><td>' + todo.todoName + '</td><td>' + todo.todoDate + '</td></tr>';
-                    }
-                    var todoContents = document.getElementById("todoContents");
-                    todoContents.innerHTML = '';
-                    todoContents.innerHTML = html;
-                }else{
-                    // 에러 처리
-                }
-            };
-
-
-            xhr.send('todoName=' + todoName + '&todoDate=' + todoDate);
-        }
-    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script type="text/javascript" src="front_jquery.js"></script>
 </head>
 <body>
     <h3>TO DO 등록</h3>
@@ -63,7 +24,7 @@
         <form id="todoForm" method="POST" action="/todo">
             <input type="text" name="todoName" id="todoName" value=""/>
             <input type="date" name="todoDate" id="todoDate" value=""/>
-            <input type="button" id="btnReg" value="등록" onclick="registerTodo()"/>
+            <input type="button" id="btnReg" value="등록"/>
         </form>
     </div>
     <div>
