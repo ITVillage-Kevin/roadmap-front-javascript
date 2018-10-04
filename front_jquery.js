@@ -20,7 +20,6 @@ $(document).ready(function(){
            todoName: todoName,
            todoDate: todoDate
        }, function(todo) {
-            alert($('#todoList > tbody:first').find("td").size());
            if($('#todoList > tbody:first').find("td").length == 1){
                $('#todoList > tbody').empty()
            }

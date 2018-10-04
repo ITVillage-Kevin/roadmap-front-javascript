@@ -16,6 +16,8 @@
         }
     </style>
     <script>
+        getTodoList();
+
         function registerTodo(){
             var todoName = document.getElementById("todoName").value;
             var todoDate = document.getElementById("todoDate").value;
@@ -36,17 +38,29 @@
 
             xhr.onload = function(){
                 if(xhr.status == 200 || xhr.status == 201){
-
                     // 화면에 반영
-                    var todoList = JSON.parse(xhr.responseText);
-                    var html = "";
-                    for (var i in todoList) {
-                        var todo = todoList[i];
-                        html += '<tr><td>' + todo.todoName + '</td><td>' + todo.todoDate + '</td></tr>';
-                    }
+                    var todo = JSON.parse(xhr.responseText);
+
                     var todoContents = document.getElementById("todoContents");
-                    todoContents.innerHTML = '';
-                    todoContents.innerHTML = html;
+                    var trs = todoContents.getElementsByTagName("tr");
+
+                    if(trs[0].getElementsByTagName("td").length == 1){
+                        todoContents.innerHTML = '';
+                    }
+
+
+                    var tr = document.createElement("tr");
+                    var td1 = document.createElement("td");
+                    var td2 = document.createElement("td");
+
+                    var todoName = document.createTextNode(todo.todoName);
+                    var todoDate = document.createTextNode(todo.todoDate);
+
+                    td1.appendChild(todoName);
+                    td2.appendChild(todoDate);
+                    tr.appendChild(td1);
+                    tr.appendChild(td2);
+                    todoContents.appendChild(tr);
                 }else{
                     // 에러 처리
                 }
@@ -54,6 +68,36 @@
 
 
             xhr.send('todoName=' + todoName + '&todoDate=' + todoDate);
+        }
+
+        function getTodoList(){
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'http://localhost:8080/todoAjax', true);
+            xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
+            xhr.onload = function(){
+                if(xhr.status == 200 || xhr.status == 201){
+                    // 화면에 반영
+                    var todoList = JSON.parse(xhr.responseText);
+                    if(todoList.length > 0){
+                        var html = "";
+                        for (var i in todoList) {
+                            var todo = todoList[i];
+                            html += '<tr><td>' + todo.todoName + '</td><td>' + todo.todoDate + '</td></tr>';
+                        }
+                        var todoContents = document.getElementById("todoContents");
+                        todoContents.innerHTML = '';
+                        todoContents.innerHTML = html;
+                    }else{
+                        var todoContents = document.getElementById("todoContents");
+                        var html = '<tr><td colspan="2" align="center">할 일이 없습니다.</td></tr>';
+                        todoContents.innerHTML = html;
+                    }
+                }
+            };
+
+
+            xhr.send();
         }
     </script>
 </head>
@@ -76,7 +120,7 @@
             </thead>
 
             <tbody id="todoContents">
-            <tr><td colspan="2">할 일이 없습니다.</td></tr>
+
             </tbody>
         </table>
     </div>
